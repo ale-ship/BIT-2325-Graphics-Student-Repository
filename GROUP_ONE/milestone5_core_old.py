@@ -4,14 +4,21 @@ from scipy.interpolate import CubicSpline
 sys.path.insert(0,os.path.dirname(__file__))
 from terrain_core import Vector3,Terrain
 
+# Particle type constants
+PTYPE_LEAF = 0
+PTYPE_DUST = 1
+PTYPE_EMBER = 2
+
 class KeyframeAnimator:
-    def __init__(self,width=128,depth=128,scale=6.0,height_scale=2.8,octaves=7):
+    def __init__(self,width=128,depth=128,scale=6.0,height_scale=2.8,octaves=7,persistence=0.5,lacunarity=2.0):
         self.W=width;self.D=depth;self.scale=scale
         self.height_scale=height_scale;self.octaves=octaves
-        self.keyframes=[];self.splines=None;self._built=False
+        self.persistence=persistence;self.lacunarity=lacunarity
+        self.keyframes=[];self._built=False
     def add_keyframe(self,t,seed):
         terrain=Terrain(width=self.W,depth=self.D,scale=self.scale,
-                        height_scale=self.height_scale,octaves=self.octaves,seed=seed)
+                        height_scale=self.height_scale,octaves=self.octaves,
+                        persistence=self.persistence,lacunarity=self.lacunarity,seed=seed)
         hg=np.array(terrain.height_grid())
         self.keyframes.append((float(t),hg));self._built=False
         print(f"    KF t={t} seed={seed} h=[{hg.min():.3f},{hg.max():.3f}]")

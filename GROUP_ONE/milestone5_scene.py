@@ -189,7 +189,7 @@ for t, s in KEYFRAME_SEEDS:
     animator.add_keyframe(t, s)
     print(f"   Keyframe t={t:.1f}s  seed={s}")
 animator.build_splines()
-print(f"   Splines built. Duration={animator.duration:.1f}s  "
+print(f"   Splines built. Duration={animator.duration():.1f}s  "
       f"(looping C² interpolation)")
 
 # Precompute colours for start/end keyframes (for faster interpolation)
@@ -234,7 +234,8 @@ water_grid['wave_h'] = (SEA_LEVEL + disp0).flatten(order='C').astype(np.float32)
 
 # ── Person D: TerrainDeformer ─────────────────────────────────
 print("[M5-D] Initialising TerrainDeformer...")
-deformer      = TerrainDeformer(width=W, depth=D, world_extent=4.0)
+deformer = TerrainDeformer(width=W, depth=D, world_extent=4.0)
+deformer.set_base_terrain(hgrid)
 deform_mode   = [False]   # whether left-click raises terrain
 deform_crater = [False]   # Shift+D makes craters
 
@@ -936,7 +937,7 @@ except Exception:
 
 hud = (
     "BIT 2325 — Procedural Terrain  (Milestones 5 + 6)\n"
-    "Alexander Somba | SCT221-C004-0680/2023\n"
+    
     "\n"
     "MOUSE:  Left=rotate   Right=zoom   Middle=pan\n"
     "\n"
@@ -970,7 +971,7 @@ analysis = NumericalAnalysis.analyse_pipeline(pipeline)
 stats_text = (
     f"SYSTEM  (M1 → M6)\n"
     f"  Terrain : {W}×{D} = {stats['vertex_count']:,} verts\n"
-    f"  Keyframes: {len(KEYFRAME_SEEDS)} (t=0→{animator.duration:.0f}s loop)\n"
+    f"  Keyframes: {len(KEYFRAME_SEEDS)} (t=0→{animator.duration():.0f}s loop)\n"
     f"  Particles: 800 max  (3 types)\n"
     f"  Wave grid: {N_wave}×{N_wave}  CFL r={ws.r:.3f}\n"
     f"  GLSL water: {'YES' if glsl_ok else 'NO'}\n"
